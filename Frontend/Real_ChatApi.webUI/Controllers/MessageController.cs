@@ -14,7 +14,10 @@ namespace Real_ChatApi.webUI.Controllers
         {
             _httpClientFactory = httpClientFactory;
         }
+        public async Task<IActionResult> Index() { 
 
+                       return View();
+        }
         public async Task<IActionResult> Chat(Guid groupId)
         {
             var userIdString = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "sub")?.Value;
