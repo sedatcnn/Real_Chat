@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Frontend\Real_ChatApi.Dtos\Real_ChatApi.Dtos.csproj" />
     <ProjectReference Include="..\..\Frontend\Real_ChatApi.webUI\Real_ChatApi.webUI.csproj" />
+    <ProjectReference Include="..\..\Presentation\Real_ChatApiReal_ChatApi.aApi\Real_ChatApiReal_ChatApi.aApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
