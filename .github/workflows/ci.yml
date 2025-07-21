@@ -40,14 +40,13 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Bağımlılıkları geri yükle
-      run: dotnet restore
+      run: dotnet restore Real_Chat.sln
 
     - name: Build et
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build Real_Chat.sln --no-restore --configuration Release
 
     - name: Testleri çalıştır
-      run: dotnet test --no-build --configuration Release
+      run: dotnet test Real_Chat.sln --no-build --configuration Release
 
     - name: Docker image’ını build et
       run: docker build -f Presentation/Real_ChatApiReal_ChatApi.aApi/Dockerfile -t real-chat-api .
-
