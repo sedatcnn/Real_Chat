@@ -138,6 +138,8 @@ Bu yapı, geliştirme ortamı için yeterli olsa da, gerçek bir sunucuya taşı
 
 ## 📸 Ekran Görüntüleri
 <img width="1915" height="961" alt="image" src="https://github.com/user-attachments/assets/0a3b5625-4ed2-444b-ae06-30efe9091f46" />
+<img width="1912" height="957" alt="image" src="https://github.com/user-attachments/assets/dc615c74-a03a-4f65-89fc-1749eac9f236" />
+Planlanan UI tasarımı 
 
 ### API Dokümantasyonu Görünümü
 <img width="1906" height="970" alt="image" src="https://github.com/user-attachments/assets/bffb5f4c-cc8c-45a9-b752-110ea8bf022f" />
