@@ -1,7 +1,3 @@
-Harika\! İstediğin README dosyasını LaTeX formatına dönüştürmeden, doğrudan markdown olarak aşağıda bulabilirsin. Bunu kopyalayıp GitHub projenin ana dizinine `README.md` adıyla kaydedebilirsin.
-
------
-
 # 🧠 BLUESENSE Backend Engineer Assignment - Gerçek Zamanlı Sohbet Sistemi
 
 Bu proje, Bluesense için hazırlanan **gerçek zamanlı bir sohbet sistemi backend** uygulamasıdır. Üretim kalitesine yakın bir kod altyapısı sunmayı hedefler. API katmanı tamamlanmış, temel işlevler geliştirilmiş ve **Docker** ile kolayca çalıştırılabilir hale getirilmiştir.
