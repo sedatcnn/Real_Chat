@@ -26,7 +26,7 @@ namespace Real_ChatApi.Application.Features.MedaitR.Handlers.UserHandler
                 Id = Guid.NewGuid(),
                 UserName = request.Username,
                 Email = request.Email,
-                PasswordHash = request.Password, // hashlenmiş hali gelmeli
+                PasswordHash = request.Password, 
                 Role = request.Role
             };
 

@@ -27,7 +27,6 @@ namespace Real_ChatApi.Application.Features.MedaitR.Handlers.JoinGroupHandler
             if (group == null || !group.IsPrivate)
                 return Guid.Empty;
 
-            // Zaten bekleyen bir istek var mı kontrolü
             var existingRequest = group.JoinRequests.FirstOrDefault(r => r.RequesterUserId == request.RequestingUserId && r.IsApproved == null);
             if (existingRequest != null)
                 return existingRequest.Id;
@@ -38,8 +37,8 @@ namespace Real_ChatApi.Application.Features.MedaitR.Handlers.JoinGroupHandler
                 GroupId = request.GroupId,
                 RequesterUserId = request.RequestingUserId,
                 RequestedAt = DateTime.UtcNow,
-                IsApproved = null, // Beklemede
-                    ApproverUserId = request.ApproverUserId, // Set ettik
+                IsApproved = null, 
+                    ApproverUserId = request.ApproverUserId,
 
             };
 

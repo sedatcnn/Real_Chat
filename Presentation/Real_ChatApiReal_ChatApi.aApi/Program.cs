@@ -96,11 +96,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("CorsPolicy");
 
-app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapHub<ChatHub>("/chathub");
+app.UseSession();
 
 app.MapControllers();
 

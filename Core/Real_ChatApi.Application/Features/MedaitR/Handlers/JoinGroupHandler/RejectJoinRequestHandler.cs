@@ -25,7 +25,6 @@ namespace Real_ChatApi.Application.Features.MedaitR.Handlers.JoinGroupHandler
             if (joinRequest == null || joinRequest.IsApproved != null)
                 return false;
 
-            // Onaylayan admin kontrolü atlandı
 
             joinRequest.IsApproved = false;
             joinRequest.ApproverUserId = request.RejectingUserId;

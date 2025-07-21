@@ -1,0 +1,32 @@
+﻿@model List<Real_ChatApi.Dtos.GroupDtos.GetGroupDto>
+
+@{
+    ViewData["Title"] = "Gruplar";
+    Layout = "_Layout";
+}
+
+<h2 class="text-center my-4">Mevcut Gruplar</h2>
+
+<div class="text-end mb-3">
+    <a asp-action="Create" class="btn btn-success">Yeni Grup</a>
+</div>
+
+<table class="table table-bordered table-hover shadow">
+    <thead class="table-dark">
+        <tr>
+            <th>Ad</th>
+            <th>Gizli mi?</th>
+            <th>Oluşturan Kullanıcı</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model)
+        {
+            <tr>
+                <td>@group.Name</td>
+                <td>@(group.IsPrivate ? "Evet" : "Hayır")</td>
+                <td>@group.CreatedByUserId</td>
+            </tr>
+        }
+    </tbody>
+</table>

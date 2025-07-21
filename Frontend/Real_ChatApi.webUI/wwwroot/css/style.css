@@ -1,0 +1,571 @@
+﻿
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    overflow: hidden; /* Prevent body scrollbar */
+}
+
+.app-wrapper {
+    display: flex;
+    height: 100vh; /* Use 100vh for full viewport height */
+    overflow: hidden; /* Hide overflow to prevent scrolling within the wrapper */
+    background: #f0f2f5;
+}
+
+/* ===== Sidebar ===== */
+.icon-sidebar {
+    background-color: #5e35b1;
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    box-shadow: 2px 0 10px rgb(94 53 177 / 0.3);
+    transition: width 0.3s ease;
+    border-radius: 0 15px 15px 0; /* Only right side rounded */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+    .icon-sidebar button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        margin: 18px 0;
+        cursor: pointer;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.25s ease;
+    }
+
+        .icon-sidebar button:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .icon-sidebar button.active {
+            background-color: #9575cd;
+            box-shadow: 0 0 10px #9575cdaa;
+            color: #fff9c4;
+        }
+
+/* ===== Chat Container ===== */
+.chat-container {
+    flex-grow: 1;
+    padding: 20px; /* This padding applies to the whole chat area, outside the panels */
+    display: flex;
+    flex-direction: column;
+    background-color: #e6e8f7;
+}
+
+/* ===== Left Sidebar (Sohbet Listesi) & Right Panel Adjustments ===== */
+.left-panel, .right-panel {
+    background: white;
+    /* Apply border-radius to the panels themselves */
+    display: flex;
+    height: 100%; /* Ensure panels fill their parent height */
+    box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
+    overflow: hidden; /* Hide overflow for internal scrolling */
+}
+
+/* Left panel specific */
+.left-panel {
+    flex-shrink: 0; /* Prevent shrinking when right panel grows */
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+/* Right panel specific */
+.right-panel {
+    flex-grow: 1; /* Allow right panel to take remaining space */
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+
+/* Arama ve Grup Oluştur Container */
+.search-group-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    gap: 10px; /* Elemanlar arası boşluk */
+    flex-shrink: 0;
+    /* justify-content: space-between; veya center gibi bir ekleme yapabiliriz
+                            ancak input'un flex-grow özelliği genellikle yeterli olacaktır. */
+}
+
+    .search-group-wrapper input[type="text"] {
+        flex-grow: 1; /* Mevcut haliyle iyi, input'un kalan alanı doldurmasını sağlar */
+        min-width: 0; /* Bootstrap'in flex-grow ile birlikte overflow'u önlemek için kritik olabilir */
+        border-radius: 20px;
+        padding: 10px 20px;
+        border: 1px solid #ccc;
+        transition: border-color 0.3s ease;
+    }
+
+        .search-group-wrapper input[type="text"]:focus {
+            border-color: #5e35b1;
+            outline: none;
+            box-shadow: 0 0 5px #5e35b1aa;
+        }
+
+/* Diğer CSS'ler aynı kalacak */
+
+.btn-create-group {
+    background-color: #5e35b1;
+    color: white;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-weight: 600;
+    box-shadow: 0 3px 8px #5e35b177;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+    .btn-create-group:hover {
+        background-color: #7e57c2;
+    }
+
+/* Filtre Dropdown */
+.filter-select {
+    border-radius: 20px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: border-color 0.3s ease;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+    .filter-select:focus {
+        outline: none;
+        border-color: #5e35b1;
+        box-shadow: 0 0 5px #5e35b1aa;
+    }
+
+/* Liste */
+#left-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto; /* Allow scrolling for the list */
+    flex-grow: 1; /* Allow list to take up available space */
+    padding: 10px 15px;
+}
+
+/* Kullanıcı Listesi Item */
+.chat-user-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    position: relative;
+    margin-bottom: 12px;
+    background-color: #fafafa;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+}
+
+    .chat-user-item:hover {
+        background-color: #f3e5f5;
+        box-shadow: 0 3px 6px rgb(94 53 177 / 0.25);
+    }
+
+    .chat-user-item.active {
+        background-color: #d1c4e9;
+        box-shadow: 0 0 15px #9575cd;
+    }
+
+    /* Profil resmi */
+    .chat-user-item img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin-right: 15px;
+        object-fit: cover;
+        box-shadow: 0 0 5px rgb(0 0 0 / 0.1);
+    }
+
+/* Kullanıcı bilgisi */
+.chat-user-info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.chat-user-name {
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-user-last-message {
+    font-size: 0.875rem;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+/* Okunmamış mesaj sayacı */
+.unread-count {
+    background-color: #d81b60;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    padding: 0 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    box-shadow: 0 0 5px #d81b60aa;
+}
+
+/* Chat Header: Mesaj arama */
+.chat-header {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-shrink: 0; /* Prevent shrinking of header */
+}
+
+    .chat-header input[type="text"] {
+        width: 250px;
+        padding: 8px 15px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        transition: border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+        .chat-header input[type="text"]:focus {
+            outline: none;
+            border-color: #5e35b1;
+            box-shadow: 0 0 5px #5e35b1aa;
+        }
+
+/* Chat Messages Container */
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto; /* Allow scrolling for messages */
+    display: flex; /* Added for correct alignment */
+    flex-direction: column; /* Added for correct alignment */
+}
+
+
+/* Message blocks */
+.message-block {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    position: relative;
+    width: fit-content; /* Adjust width to content */
+    max-width: 80%; /* Prevent bubbles from being too wide */
+}
+    /* Gelen mesaj */
+    .message-block.incoming {
+        flex-direction: row;
+        justify-content: flex-start;
+        margin-right: auto; /* Push to the left */
+    }
+
+        .message-block.incoming img {
+            order: 0;
+        }
+
+        .message-block.incoming .message-content {
+            background-color: #f1f0f0;
+            color: #333;
+            border-radius: 15px 15px 15px 0;
+            padding: 12px 18px;
+            font-size: 0.95rem;
+            position: relative;
+            box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
+            user-select: text;
+            cursor: default;
+            word-break: break-word;
+        }
+
+    /* Giden mesaj */
+    .message-block.outgoing {
+        flex-direction: row-reverse; /* Put image to the right if re-added */
+        justify-content: flex-end; /* Align content within the block to the end */
+        align-items: flex-start; /* Align items vertically at the start */
+        margin-left: auto; /* Push the entire block to the right */
+        margin-right: 0; /* Ensure no extra right margin */
+    }
+
+        .message-block.outgoing img {
+            order: 1;
+            /* You might need to adjust image styling if it's affecting layout */
+        }
+
+        .message-block.outgoing .message-content {
+            background-color: #5e35b1;
+            color: white;
+            border-radius: 15px 15px 0 15px;
+            padding: 12px 18px;
+            font-size: 0.95rem;
+            position: relative;
+            order: 0;
+            box-shadow: 0 1px 8px rgb(94 53 177 / 0.5);
+            user-select: text;
+            cursor: default;
+            max-width: 100%; /* Content should not exceed bubble width */
+            word-break: break-word; /* Prevent long words from breaking layout */
+        }
+
+/* Mesaj zaman bilgisi */
+.message-time {
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 4px;
+    user-select: none;
+    display: block; /* Ensure time is on its own line */
+    text-align: right; /* Align time to the right within the bubble */
+}
+
+.message-block.incoming .message-time {
+    text-align: left; /* Align time to the left for incoming */
+}
+
+
+/* Mesaj gönderim alanı */
+.message-input-area {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0; /* Prevent shrinking of input area */
+}
+
+    .message-input-area input[type="text"] {
+        flex-grow: 1;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        padding: 10px 20px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+        .message-input-area input[type="text"]:focus {
+            outline: none;
+            border-color: #5e35b1;
+            box-shadow: 0 0 5px #5e35b1aa;
+        }
+
+    .message-input-area button {
+        border-radius: 25px;
+        background-color: #5e35b1;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        padding: 8px 18px;
+        cursor: pointer;
+        box-shadow: 0 3px 10px #5e35b177;
+        transition: background-color 0.3s ease;
+    }
+
+        .message-input-area button:hover {
+            background-color: #7e57c2;
+        }
+
+        .message-input-area button.file-btn {
+            background-color: #999;
+            padding: 7px 12px;
+            font-size: 1.4rem;
+            box-shadow: none;
+        }
+
+            .message-input-area button.file-btn:hover {
+                background-color: #777;
+            }
+
+/* Grup oluşturma popup */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgb(0 0 0 / 0.15);
+    display: none;
+    z-index: 9999;
+    width: 360px;
+    max-width: 90vw;
+    font-weight: 600;
+}
+
+    .popup .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        font-weight: bold;
+        color: #5e35b1;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 0 5px rgba(94, 53, 177, 0.2);
+    }
+
+        .popup .close-btn:hover {
+            background-color: #5e35b1;
+            color: white;
+        }
+
+        .popup .close-btn:hover {
+            color: #5e35b1;
+        }
+
+    .popup h5 {
+        margin-bottom: 20px;
+        font-size: 1.4rem;
+        color: #5e35b1;
+        text-align: center;
+    }
+
+    .popup input, .popup select {
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        padding: 12px 15px;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        transition: border-color 0.3s ease;
+        width: 100%; /* Make inputs full width */
+    }
+
+        .popup input:focus, .popup select:focus {
+            outline: none;
+            border-color: #5e35b1;
+            box-shadow: 0 0 6px #5e35b1aa;
+        }
+
+    .popup button {
+        background-color: #5e35b1;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 12px 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 5px 15px #5e35b1bb;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+
+        .popup button:hover {
+            background-color: #7e57c2;
+        }
+
+/* Grup listesi popup */
+#groupListPopup ul.list-group {
+    max-height: 240px;
+    overflow-y: auto;
+    border-radius: 12px;
+    box-shadow: inset 0 0 8px rgb(0 0 0 / 0.05);
+    margin-bottom: 20px;
+}
+
+#groupListPopup li.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.25s ease;
+    padding: 12px 20px;
+}
+
+    #groupListPopup li.list-group-item:hover {
+        background-color: #ede7f6;
+    }
+
+#groupListPopup button {
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* Sağ tık menüsü */
+#contextMenu {
+    position: absolute;
+    display: none;
+    z-index: 10000;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+
+    #contextMenu button {
+        display: block;
+        width: 100%;
+        background: none;
+        border: none;
+        padding: 10px 15px;
+        text-align: left;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.25s ease;
+    }
+
+        #contextMenu button:hover {
+            background-color: #ede7f6;
+            color: #5e35b1;
+        }
+
+.filter-dropdown .dropdown-toggle {
+    border-radius: 20px;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background-color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: border-color 0.3s;
+}
+
+    .filter-dropdown .dropdown-toggle:focus {
+        outline: none;
+        border-color: #5e35b1;
+        box-shadow: 0 0 5px #5e35b1aa;
+    }
+
+.filter-dropdown .dropdown-menu {
+    min-width: 200px;
+}

@@ -18,7 +18,6 @@ namespace Real_ChatApi.Infrastructure.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            // GroupUser: Many-to-Many (User <-> Group)
             modelBuilder.Entity<GroupUser>()
                 .HasKey(gu => new { gu.GroupId, gu.UserId });
 
@@ -32,19 +31,17 @@ namespace Real_ChatApi.Infrastructure.Context
                 .WithMany(g => g.Members)
                 .HasForeignKey(gu => gu.GroupId);
 
-            // Message: SenderUser & Group
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.SenderUser)
                 .WithMany(u => u.Messages)
                 .HasForeignKey(m => m.SenderUserId)
-                .OnDelete(DeleteBehavior.Restrict); // Kullanıcı silinince mesajlar silinmesin
+                .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.Group)
                 .WithMany(g => g.Messages)
                 .HasForeignKey(m => m.GroupId);
 
-            // JoinRequest: RequesterUser & ApproverUser & Group
             modelBuilder.Entity<JoinRequest>()
                 .HasOne(j => j.RequesterUser)
                 .WithMany()
@@ -62,7 +59,6 @@ namespace Real_ChatApi.Infrastructure.Context
                 .WithMany(g => g.JoinRequests)
                 .HasForeignKey(j => j.GroupId);
 
-            // Group: CreatedByUser
             modelBuilder.Entity<Group>()
                 .HasOne(g => g.CreatedByUser)
                 .WithMany()

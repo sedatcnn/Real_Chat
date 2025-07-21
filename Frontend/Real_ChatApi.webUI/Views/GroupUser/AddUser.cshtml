@@ -1,0 +1,27 @@
+﻿@model Real_ChatApi.Dtos.UserGroups.AddUserToGroupDto
+
+@{
+    ViewData["Title"] = "Gruba Kullanıcı Ekle";
+    Layout = "_Layout";
+
+    var userList = ViewBag.Users as List<SelectListItem>;
+}
+
+<h2 class="mb-4">Gruba Kullanıcı Ekle</h2>
+
+<form asp-action="AddUser" method="post" class="p-4 shadow rounded bg-light" style="max-width: 400px;">
+    @Html.HiddenFor(m => m.GroupId)
+
+    <div class="mb-3">
+        <label for="UserId" class="form-label">Kullanıcı Seç</label>
+        @Html.DropDownListFor(m => m.UserId, userList, "-- Kullanıcı seçin --", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-check mb-3">
+        @Html.CheckBoxFor(m => m.IsAdmin, new { @class = "form-check-input", id = "IsAdmin" })
+        <label class="form-check-label" for="IsAdmin">Admin olarak ekle</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Ekle</button>
+</form>

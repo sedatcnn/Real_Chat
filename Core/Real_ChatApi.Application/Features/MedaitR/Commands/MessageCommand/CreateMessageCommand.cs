@@ -11,7 +11,7 @@ namespace Real_ChatApi.Application.Features.MedaitR.Commands.MessageCommand
     {
         public Guid SenderUserId { get; set; }
         public Guid GroupId { get; set; }
-        public string Content { get; set; } = default!;
+        public string Text { get; set; } = default!;
         public string? FileUrl { get; set; } // opsiyonel dosya
     }
 }

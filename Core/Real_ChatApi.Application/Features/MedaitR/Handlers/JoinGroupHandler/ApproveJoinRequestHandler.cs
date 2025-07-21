@@ -27,12 +27,10 @@ namespace Real_ChatApi.Application.Features.MedaitR.Handlers.JoinGroupHandler
             if (joinRequest == null || joinRequest.IsApproved != null)
                 return false;
 
-            // Burada ApprovingUserId'nin admin olup olmadığını kontrol etmek gerekir (örnek için atladım)
 
             joinRequest.IsApproved = true;
             joinRequest.ApproverUserId = request.ApprovingUserId;
 
-            // Grup üyeliği ekleme
             var groupUser = new GroupUser
             {
                 GroupId = joinRequest.GroupId,

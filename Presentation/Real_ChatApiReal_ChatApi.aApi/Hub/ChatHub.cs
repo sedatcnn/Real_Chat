@@ -20,7 +20,7 @@ public class ChatHub : Hub
         {
             GroupId = Guid.Parse(groupId),
             SenderUserId = Guid.Parse(userId),
-            Content = content,
+            Text = content,
             FileUrl = fileUrl
         };
 

@@ -1,0 +1,52 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123456
+          POSTGRES_DB: chatdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Kodları checkout et
+      uses: actions/checkout@v4
+
+    - name: .NET SDK kur (.NET 8)
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Bağımlılıkları geri yükle
+      run: dotnet restore Real_Chat.sln
+
+    - name: Build et
+      run: dotnet build Real_Chat.sln --no-restore --configuration Release
+
+    - name: Testleri çalıştır
+      run: dotnet test Real_Chat.sln --no-build --configuration Release
+
+    - name: Docker image’ını build et
+      run: docker build -f Presentation/Real_ChatApiReal_ChatApi.aApi/Dockerfile -t real-chat-api .

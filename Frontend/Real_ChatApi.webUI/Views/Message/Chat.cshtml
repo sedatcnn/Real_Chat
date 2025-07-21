@@ -1,0 +1,187 @@
+﻿@model List<Real_ChatApi.Dtos.MessageDtos.GetMessageDto>
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@{
+    ViewData["Title"] = "Sohbet";
+    Layout = "_Layout";
+
+    var currentUserId = (Guid)ViewBag.CurrentUserId;
+    var groupCreatorId = (Guid)ViewBag.GroupCreatorId;
+    var requestVerificationToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<h2>Sohbet</h2>
+
+<div class="card">
+    <div class="card-body" style="height: 500px; overflow-y: auto;" id="messagesContainer">
+        @if (Model == null || !Model.Any())
+        {
+            <p class="text-muted">Henüz mesaj yok.</p>
+        }
+        else
+        {
+            <ul class="list-unstyled">
+                @foreach (var msg in Model.OrderBy(m => m.SentAt))
+                {
+                    bool canEditOrDelete = (msg.SenderUserId == currentUserId) || (currentUserId == groupCreatorId);
+                    <li class="mb-3" data-message-id="@msg.Id">
+                        <div>
+                            <small class="text-muted">
+                                <b>@msg.SenderUserId</b> @msg.SentAt.ToString("g")
+                                @if (msg.EditedAt != null)
+                                {
+                                    <em>(Düzenlendi @msg.EditedAt?.ToString("g"))</em>
+                                }
+                            </small>
+                        </div>
+                        <div>
+                            @if (msg.IsDeleted)
+                            {
+                                <em class="text-danger">Mesaj silindi</em>
+                            }
+                            else
+                            {
+                                <span class="message-text">@msg.Text</span>
+                                @if (!string.IsNullOrEmpty(msg.FileUrl))
+                                {
+                                    <div>
+                                        <a href="@msg.FileUrl" target="_blank">Dosya</a>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        @if (!msg.IsDeleted && canEditOrDelete)
+                        {
+                            <div class="mt-1">
+                                <button class="btn btn-sm btn-warning edit-message-btn">Düzenle</button>
+                                <button class="btn btn-sm btn-danger delete-message-btn">Sil</button>
+                            </div>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+
+    <form id="sendMessageForm" class="p-3 border-top">
+        <input type="hidden" id="editMessageId" value="" />
+        <div class="mb-2">
+            <textarea id="messageText" class="form-control" placeholder="Mesajınızı yazın..." rows="3"></textarea>
+        </div>
+        <div class="mb-2">
+            <input type="file" id="fileUpload" />
+        </div>
+        <button type="submit" class="btn btn-primary">Gönder</button>
+        <button type="button" id="cancelEditBtn" class="btn btn-secondary d-none">Düzenlemeyi İptal Et</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const currentUserId = '@currentUserId';
+        const groupCreatorId = '@groupCreatorId';
+        const requestVerificationToken = '@requestVerificationToken';
+
+        document.querySelectorAll(".edit-message-btn").forEach(btn => {
+            btn.addEventListener("click", e => {
+                const li = e.target.closest("li");
+                const messageId = li.getAttribute("data-message-id");
+                const textSpan = li.querySelector(".message-text");
+                const text = textSpan.textContent;
+
+                document.getElementById("editMessageId").value = messageId;
+                document.getElementById("messageText").value = text;
+                document.getElementById("cancelEditBtn").classList.remove("d-none");
+                document.getElementById("messageText").focus();
+            });
+        });
+
+        document.getElementById("cancelEditBtn").addEventListener("click", () => {
+            document.getElementById("editMessageId").value = "";
+            document.getElementById("messageText").value = "";
+            document.getElementById("cancelEditBtn").classList.add("d-none");
+        });
+
+        document.querySelectorAll(".delete-message-btn").forEach(btn => {
+            btn.addEventListener("click", async e => {
+                if (!confirm("Bu mesajı silmek istediğinize emin misiniz?")) return;
+
+                const li = e.target.closest("li");
+                const messageId = li.getAttribute("data-message-id");
+
+                const response = await fetch('/Message/DeleteMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': requestVerificationToken
+                    },
+                    body: JSON.stringify({ messageId: messageId, requestingUserId: currentUserId })
+                });
+
+                if (response.ok) {
+                    alert("Mesaj silindi.");
+                    location.reload();
+                } else {
+                    alert("Mesaj silinirken hata oluştu.");
+                }
+            });
+        });
+
+        document.getElementById("sendMessageForm").addEventListener("submit", async e => {
+            e.preventDefault();
+
+            const editMessageId = document.getElementById("editMessageId").value;
+            const text = document.getElementById("messageText").value.trim();
+
+            if (!text) {
+                alert("Lütfen mesaj yazın.");
+                return;
+            }
+
+            if (editMessageId) {
+                
+                const response = await fetch('/Message/EditMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': requestVerificationToken
+                    },
+                    body: JSON.stringify({
+                        messageId: editMessageId,
+                        requestingUserId: currentUserId,
+                        newContent: text
+                    })
+                });
+
+                if (response.ok) {
+                    alert("Mesaj güncellendi.");
+                    location.reload();
+                } else {
+                    alert("Mesaj güncellenirken hata oluştu.");
+                }
+            } else {
+                const response = await fetch('/Message/SendMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': requestVerificationToken
+                    },
+                    body: JSON.stringify({
+                        groupId: '@ViewBag.GroupId',
+                        senderUserId: currentUserId,
+                        text: text,
+                        fileUrl: null
+                    })
+                });
+
+                if (response.ok) {
+                    alert("Mesaj gönderildi.");
+                    location.reload();
+                } else {
+                    alert("Mesaj gönderilirken hata oluştu.");
+                }
+            }
+        });
+    </script>
+}

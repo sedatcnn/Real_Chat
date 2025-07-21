@@ -1,0 +1,50 @@
+﻿@model List<Real_ChatApi.Dtos.JoinDtos.GetJoinDto>
+
+<h2>Gelen Katılım İstekleri</h2>
+
+@if (!Model.Any())
+{
+    <p>Herhangi bir katılım isteği yok.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Kullanıcı</th>
+                <th>Tarih</th>
+                <th>Durum</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Model)
+            {
+                <tr>
+                    <td>@request.UserId</td>
+                    <td>@request.RequestedAt.ToString("g")</td>
+                    <td>
+                        @if (request.IsApproved)
+                        {
+                            <span class="text-success">Onaylandı</span>
+                        }
+                        else
+                        {
+                            <span class="text-warning">Bekliyor</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-action="ApproveRequest" method="post" style="display:inline">
+                            <input type="hidden" name="requestId" value="@request.Id" />
+                            <button type="submit" class="btn btn-success btn-sm">Onayla</button>
+                        </form>
+                        <form asp-action="RejectRequest" method="post" style="display:inline">
+                            <input type="hidden" name="requestId" value="@request.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Reddet</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

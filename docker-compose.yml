@@ -38,7 +38,17 @@ services:
     ports:
       - "6379:6379"
 
+  real_chatapi.webui:
+    image: ${DOCKER_REGISTRY-}realchatapiwebui
+    build:
+      context: .
+      dockerfile: Frontend/Real_ChatApi.webUI/Dockerfile
+    ports:
+      - "5291:5291"
+    depends_on:
+      - real_chatapi.api
 volumes:
   postgres_data:
   pgadmin_data:
+
 

@@ -53,7 +53,6 @@ namespace Real_ChatApiReal_ChatApi.aApi.Controllers
 
             var (jwtToken, newRefreshToken) = await _tokenService.GenerateTokensAsync(user);
 
-            // Önceki refresh token iptal edilebilir (opsiyonel)
             await _tokenService.RevokeRefreshTokenAsync(request.RefreshToken);
 
             return Ok(new

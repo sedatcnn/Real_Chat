@@ -1,0 +1,41 @@
+﻿@model List<Real_ChatApi.Dtos.UserDtos.GetUserDto>
+
+@{
+    ViewData["Title"] = "Kullanıcılar";
+}
+
+<h2>Kullanıcılar</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>Henüz kullanıcı yok.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Kullanıcı Adı</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@user.Role</td>
+                    <td>
+                        <form asp-action="DeleteUser" method="post" onsubmit="return confirm('Kullanıcıyı silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

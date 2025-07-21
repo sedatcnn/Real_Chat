@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat Uygulaması</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body onload="showSection('chats')">
+
+    <div class="app-wrapper">
+        <div class="chat-container">
+            <div class="row h-100 g-1">
+
+                <div class="col-md-4 left-panel d-flex flex-column" id="leftPanelContent">
+                    <div class="search-group-wrapper">
+                        <input type="text" placeholder="Ara veya yeni sohbet başlat" aria-label="Sohbet arama" />
+                        <button class="btn-create-group" onclick="openGroupPopup()" aria-label="Grup oluştur">
+                            <span class="material-icons" style="vertical-align: middle;">add</span>
+                        </button>
+
+                        <div class="dropdown filter-dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="material-icons">filter_list</span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                                <li><a class="dropdown-item" href="#">Tüm Sohbetler</a></li>
+                                <li><a class="dropdown-item" href="#">Gruplar</a></li>
+                                <li><a class="dropdown-item" href="#">Okunan</a></li>
+                                <li><a class="dropdown-item" href="#">Okunmayan</a></li>
+                                <li><a class="dropdown-item" href="#">Kişiler</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="leftPanelInnerContent">
+                    </div>
+
+                    <div id="groupPopup" class="popup" style="display: none;">
+                        <button class="close-btn" onclick="closeGroupPopup()">&times;</button>
+                        <h5>Yeni Grup Oluştur</h5>
+
+                        @using (Html.BeginForm("Create", "Group", FormMethod.Post, new { id = "createGroupForm" }))
+                        {
+                            <div class="mb-2">
+                                @Html.TextBox("Name", null, new { @class = "form-control", placeholder = "Grup Adı" })
+                            </div>
+                            <div class="mb-2">
+                                @Html.DropDownList("IsPrivate", new SelectList(new[] {
+                            new { Value = false, Text = "Herkese Açık" },
+                            new { Value = true, Text = "Özel" }
+                            }, "Value", "Text"), new { @class = "form-control" })
+                            </div>
+
+
+
+                            <button type="submit" class="btn btn-primary w-100">Grubu Oluştur</button>
+                        }
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-8 right-panel d-flex flex-column">
+                    <div class="chat-header">
+                        <input type="text" placeholder="Mesajlarda ara..." />
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message-block incoming">
+                            <div class="message-content">Merhaba, nasılsın?<div class="message-time">10:21</div></div>
+                        </div>
+                        <div class="message-block outgoing">
+                            <div class="message-content">İyiyim, sen nasılsın?<div class="message-time">10:22</div></div>
+                        </div>
+                    </div>
+
+                    <div class="message-input-area">
+                        <input type="text" placeholder="Bir mesaj yazın..." />
+                        <button class="file-btn"><span class="material-icons">attach_file</span></button>
+                        <button><span class="material-icons">send</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="contextMenu" style="display:none; position:absolute;">
+        <button onclick="editMessage()">Mesajı Düzenle</button>
+        <button onclick="deleteMessage()">Mesajı Sil</button>
+    </div>
+
+    <script>
+
+        function showSection(section) {
+            const buttons = document.querySelectorAll('.icon-sidebar button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            let url = "";
+
+            if (section === 'groups') {
+                document.getElementById("btn-groups").classList.add('active');
+                url = '/Group/PartialList';
+            } else if (section === 'chats') {
+                document.getElementById("btn-chats").classList.add('active');
+                url = '/Chat/PartialList';
+            } else if (section === 'requests') {
+                document.getElementById("btn-requests").classList.add('active');
+                url = '/Group/JoinRequestsPanel';
+            }
+
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("leftPanelInnerContent").innerHTML = html;
+                })
+                .catch(err => {
+                    console.error("Panel yüklenemedi:", err);
+                });
+        }
+
+                       document.getElementById('createGroupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+
+            const data = {
+                Name: formData.get('Name'),
+                IsPrivate: formData.get('IsPrivate') === 'true'
+            };
+
+            fetch('/Group/Create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    alert("Grup oluşturulamadı.");
+                    throw new Error("Sunucu hatası");
+                }
+                closeGroupPopup();
+                return fetch('/Group/PartialList');
+            })
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('leftPanelInnerContent').innerHTML = html;
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        });
+
+
+        function openGroupPopup() {
+            document.getElementById("groupPopup").style.display = "block";
+        }
+
+        function closeGroupPopup() {
+            document.getElementById("groupPopup").style.display = "none";
+        }
+
+
+        function openGroupList() {
+            document.getElementById("groupListPopup").style.display = "block";
+        }
+
+        function closeGroupList() {
+            document.getElementById("groupListPopup").style.display = "none";
+        }
+
+        function editMessage() {
+            alert("Mesaj düzenleme özelliği burada çalışacak.");
+            document.getElementById("contextMenu").style.display = "none";
+        }
+
+        function deleteMessage() {
+            alert("Mesaj silme özelliği burada çalışacak.");
+            document.getElementById("contextMenu").style.display = "none";
+        }
+
+        document.addEventListener("click", function (e) {
+            const contextMenu = document.getElementById("contextMenu");
+            const groupPopup = document.getElementById("groupPopup");
+            const groupListPopup = document.getElementById("groupListPopup");
+
+            const isDropdownClick = e.target.closest('.dropdown') !== null;
+            const isGroupPopupClick = e.target.closest('#groupPopup') !== null;
+            const isGroupListPopupClick = e.target.closest('#groupListPopup') !== null;
+            const isCreateGroupButton = e.target.closest('.btn-create-group') !== null;
+            const isGroupListButton = e.target.closest('[onclick="openGroupList()"]') !== null;
+
+            if (!contextMenu.contains(e.target)) {
+                contextMenu.style.display = "none";
+            }
+
+            if (groupPopup.style.display === "block" && !isGroupPopupClick && !isCreateGroupButton) {
+                closeGroupPopup();
+            }
+            if (groupListPopup.style.display === "block" && !isGroupListPopupClick && !isGroupListButton) {
+                closeGroupList();
+            }
+        });
+                function loadGroupPanel() {
+            fetch('/Group/Panel')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("leftPanelContent").innerHTML = html;
+                });
+        }
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+            const contextMenu = document.getElementById("contextMenu");
+            contextMenu.style.display = "block";
+            contextMenu.style.left = `${e.pageX}px`;
+            contextMenu.style.top = `${e.pageY}px`;
+        });
+    </script>
+</body>
+</html>

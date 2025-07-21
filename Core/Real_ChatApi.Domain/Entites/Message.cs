@@ -14,7 +14,6 @@ namespace Real_ChatApi.Domain.Entites
 
         public Guid SenderUserId { get; set; }
         public User SenderUser { get; set; } = null!;
-        public string Content { get; set; } = null!;
 
         public string? Text { get; set; }
         public string? FileUrl { get; set; }

@@ -26,7 +26,7 @@ namespace Real_ChatApi.Application.Features.MedaitR.Handlers.MessageHandler
                 Id = Guid.NewGuid(),
                 GroupId = request.GroupId,
                 SenderUserId = request.SenderUserId,
-                Text = request.Content,
+                Text = request.Text,
                 FileUrl = request.FileUrl,
                 SentAt = DateTime.UtcNow,
                 IsDeleted = false

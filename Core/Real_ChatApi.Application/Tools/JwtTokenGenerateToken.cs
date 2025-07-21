@@ -17,10 +17,10 @@ namespace Real_ChatApi.Application.Tools
         {
             var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, result.Id.ToString()),  // subject olarak kullanıcı id
+            new Claim(JwtRegisteredClaimNames.Sub, result.Id.ToString()),  
             new Claim(JwtRegisteredClaimNames.Email, result.Mail ?? ""),
             new Claim("UserName", result.Username ?? ""),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // token ID
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
         };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key));

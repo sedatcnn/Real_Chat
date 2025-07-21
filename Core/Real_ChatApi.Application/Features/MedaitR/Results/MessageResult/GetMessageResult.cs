@@ -11,7 +11,7 @@ namespace Real_ChatApi.Application.Features.MedaitR.Results.MessageResult
         public Guid Id { get; set; }
         public Guid SenderUserId { get; set; }
         public Guid GroupId { get; set; }
-        public string Content { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
         public DateTime SentAt { get; set; }
         public bool IsEdited { get; set; }
         public bool IsDeleted { get; set; }
