@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using Xunit;
 using Real_ChatApi.webUI.Controllers;
 using System.Net.Http;
@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Text;
+using Real_ChatApi.Dtos.GroupDtos;
 
 public class GroupControllerTests
 {
@@ -26,7 +27,6 @@ public class GroupControllerTests
         httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
         var controller = new GroupController(httpClientFactoryMock.Object);
-        // ModelState valid kabul etmek için ek işlem yapabilirsin veya dto düzgün olmalı
 
         // Act
         var result = await controller.Create(dto);
@@ -37,7 +37,6 @@ public class GroupControllerTests
     }
 }
 
-// Fake handler kullanımı:
 public class FakeHttpMessageHandler : HttpMessageHandler
 {
     private readonly HttpResponseMessage _response;
