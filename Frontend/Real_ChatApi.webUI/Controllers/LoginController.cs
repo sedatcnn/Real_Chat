@@ -69,7 +69,9 @@ namespace Real_ChatApi.webUI.Controllers
 
                         var userDto = userDtoList.FirstOrDefault();
                         HttpContext.Session.SetString("User", JsonConvert.SerializeObject(userDto));
-                        return RedirectToAction("Index", "Group");
+                        //return RedirectToAction("Index", "Group");
+                          return RedirectToAction("Index", "Message");
+
                     }
                 }
             }
